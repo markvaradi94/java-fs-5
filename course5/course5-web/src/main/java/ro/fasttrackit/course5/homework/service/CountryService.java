@@ -7,10 +7,7 @@ import ro.fasttrackit.course5.homework.country.CountryProvider;
 import ro.fasttrackit.course5.homework.domain.Country;
 import ro.fasttrackit.course5.homework.domain.CountryRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
@@ -22,6 +19,7 @@ import static java.util.stream.Collectors.toMap;
 @RequiredArgsConstructor
 public class CountryService {
     private final CountryProvider countryProvider;
+    private final CountryContext countryContext;
     private List<Country> countries;
 
     @PostConstruct
@@ -117,5 +115,11 @@ public class CountryService {
                 .filter(country -> countryName.equalsIgnoreCase(country.name()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Could not find country with name " + countryName));
+    }
+
+    public Optional<Country> getMyScopedCountry() {
+        return countries.stream()
+                .filter(country -> countryContext.getMyCountryName().equalsIgnoreCase(country.name()))
+                .findFirst();
     }
 }
